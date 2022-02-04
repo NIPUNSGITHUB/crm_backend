@@ -14,7 +14,6 @@ class CustomerController extends Controller
     public function __construct(ICustomerRepo $customerRrepo)
     {
         $this->customerRrepo = $customerRrepo;
-
     }
 
     /**
@@ -109,9 +108,14 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
-    {
-        //
+    public function update($id,Request $request)
+    { 
+        $result = $this->customerRrepo->updateCustomer($id,$request);  
+        return response()->json([
+            'status' => $result["status"],
+            'data' => $result["data"],
+            'message' => $result["message"]
+        ]);
     }
 
     /**

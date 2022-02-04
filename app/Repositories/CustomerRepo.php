@@ -3,6 +3,7 @@
 namespace App\Repositories; 
 use App\Models\Customer;
 use App\Interfaces\ICustomerRepo;
+use Illuminate\Support\Facades\Log;
 
 $responseArr = ["status"=>false,"data"=>null,"message"=>null];
 class CustomerRepo implements ICustomerRepo
@@ -11,7 +12,7 @@ class CustomerRepo implements ICustomerRepo
     function getAllCustomers(){ 
         $responseArr["data"] = Customer::all()->where('is_active',1);   
         $responseArr["status"] = true;  
-        $responseArr["message"] = "Sucessfull";
+        $responseArr["message"] = "Sucessfull!";
         return $responseArr;
     }
     
@@ -37,7 +38,7 @@ class CustomerRepo implements ICustomerRepo
             $responseArr["message"] = $ex->message();
 
         }
-        $responseArr["data"] = $this->getAllCustomers();
+        $responseArr["data"] = $this->getAllCustomers()['data'];
         return $responseArr;
     }
 
@@ -45,9 +46,18 @@ class CustomerRepo implements ICustomerRepo
         $result = Customer::create($customer);
         $responseArr["status"] = ($result) ? true : false;
         $responseArr["message"] = ($result) ? "Sucessfull!" : "Fail!";
-        $responseArr["data"] = $this->getAllCustomers();
+        $responseArr["data"] = $this->getAllCustomers()['data'];
         return $responseArr;
 
+    }
+
+    function updateCustomer($customerId, $newDetails) 
+    {   
+        $result = Customer::whereId($customerId)->where('is_active',1)->update($newDetails->all()); 
+        $responseArr["status"] = ($result) ? true : false;
+        $responseArr["message"] = ($result) ? "Sucessfull!" : "Fail!";
+        $responseArr["data"] = $this->getAllCustomers()['data'];
+        return $responseArr;
     }
 }
 
