@@ -66,13 +66,27 @@ class CustomerController extends Controller
     }
     
     public function update($id,Request $request)
-    { 
-        $result = $this->customerRrepo->updateCustomer($id,$request);  
-        return response()->json([
-            'status' => $result["status"],
-            'data' => $result["data"],
-            'message' => $result["message"]
-        ]);
+    {
+        $rules = [
+            'title' => 'required',
+            'first_name' => 'required|max:20|unique:customers',
+            'last_name' => 'required|max:20',
+            'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10' 
+        ]; 
+        $validator = Validator::make($request->all(), $rules ); 
+        if ($validator->fails()) {
+            $response = response()->json([
+                'status' => false,
+                'data' => null,
+                'message' =>  $validator->messages()
+            ]); 
+        }
+        else{
+            $result = $this->customerRrepo->updateCustomer($id,$request);  
+            $response = $result;
+        }
+        return $response;  
+        
     }
  
     public function destroy($id)

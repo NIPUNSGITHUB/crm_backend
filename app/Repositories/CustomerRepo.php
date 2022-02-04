@@ -53,7 +53,7 @@ class CustomerRepo implements ICustomerRepo
 
     function updateCustomer($customerId, $newDetails) 
     {   
-        $result = Customer::whereId($customerId)->where('is_active',1)->update($newDetails->all()); 
+        $result = Customer::whereId($customerId)->where('is_active',1)->update($newDetails->only('first_name',"last_name","phone_number")); 
         $responseArr["status"] = ($result) ? true : false;
         $responseArr["message"] = ($result) ? "Sucessfull!" : "Fail!";
         $responseArr["data"] = $this->getAllCustomers()['data'];
