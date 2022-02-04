@@ -100,8 +100,23 @@ class CustomerController extends Controller
     }
 
     public function importFromCSV(Request $request){
-        $import = new CustomerImport();
-        $result = Excel::import($import, $request->file);         
-        return response()->json($import->getRowResult());
+
+        $rules = [
+            'file' => 'required',
+        ]; 
+        $validator = Validator::make($request->file(), $rules ); 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'message' =>  $validator->messages()
+            ]); 
+        }
+        else
+        {
+            $import = new CustomerImport();
+            $result = Excel::import($import, $request->file);         
+            return response()->json($import->getRowResult());
+        }        
     }
 }
