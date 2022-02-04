@@ -19,4 +19,6 @@ Route::controller(CustomerController::class)->group(function () {
     Route::get('customers', 'index');
     Route::get('customers/{value}','show');
     Route::delete('customers/{id}','destroy');
+    Route::post('customers','store');
 }); 
+

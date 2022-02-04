@@ -6,8 +6,7 @@ use App\Interfaces\ICustomerRepo;
 
 $responseArr = ["status"=>false,"data"=>null,"message"=>null];
 class CustomerRepo implements ICustomerRepo
-{
-
+{ 
     
     function getAllCustomers(){ 
         $responseArr["data"] = Customer::all()->where('is_active',1);   
@@ -40,6 +39,15 @@ class CustomerRepo implements ICustomerRepo
         }
         $responseArr["data"] = $this->getAllCustomers();
         return $responseArr;
+    }
+
+    function createCustomer($customer){             
+        $result = Customer::create($customer);
+        $responseArr["status"] = ($result) ? true : false;
+        $responseArr["message"] = ($result) ? "Sucessfull!" : "Fail!";
+        $responseArr["data"] = $this->getAllCustomers();
+        return $responseArr;
+
     }
 }
 
