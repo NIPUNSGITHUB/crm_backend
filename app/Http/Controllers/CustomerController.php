@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Imports\CustomerImport;
 use App\Interfaces\ICustomerRepo;
-use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel; 
+use Illuminate\Support\Facades\Validator; 
 
 class CustomerController extends Controller
 {
@@ -14,13 +16,8 @@ class CustomerController extends Controller
     public function __construct(ICustomerRepo $customerRrepo)
     {
         $this->customerRrepo = $customerRrepo;
-    }
+    } 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $result = $this->customerRrepo->getAllCustomers(); 
@@ -29,24 +26,8 @@ class CustomerController extends Controller
             'data' => $result["data"],
             'message' => $result["message"]
         ]);
-    }
+    }  
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {         
         $response = null;
@@ -72,13 +53,7 @@ class CustomerController extends Controller
  
         return $response;  
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+    
     public function show(Request $request)
     {
         $value = $request->route('value'); 
@@ -89,25 +64,7 @@ class CustomerController extends Controller
             'message' => $result["message"]
         ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+    
     public function update($id,Request $request)
     { 
         $result = $this->customerRrepo->updateCustomer($id,$request);  
@@ -117,13 +74,7 @@ class CustomerController extends Controller
             'message' => $result["message"]
         ]);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function destroy($id)
     {         
         $result = $this->customerRrepo->deleteCustomer($id); 
@@ -132,5 +83,11 @@ class CustomerController extends Controller
             'data' => $result["data"],
             'message' => $result["message"]
         ]);
+    }
+
+    public function importFromCSV(Request $request){
+        $import = new CustomerImport();
+        $result = Excel::import($import, $request->file);         
+        return response()->json($import->getRowResult());
     }
 }

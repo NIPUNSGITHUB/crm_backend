@@ -21,5 +21,6 @@ Route::controller(CustomerController::class)->group(function () {
     Route::post('customers','store');
     Route::put('customers/{id}','update');
     Route::delete('customers/{id}','destroy');
+    Route::post('customers/import','importFromCSV');
 }); 
 
