@@ -125,7 +125,7 @@ class CustomerController extends Controller
         $response = null;
         $rules = [
             'title' => 'required',
-            'first_name' => 'required|max:20|unique:customers',
+            'first_name' => 'required|max:20',
             'last_name' => 'required|max:20',
             'email' => 'required|email|unique:customers',
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10' 
@@ -136,11 +136,15 @@ class CustomerController extends Controller
                 'status' => false,
                 'data' => null,
                 'message' =>  $validator->messages()
-            ]); 
+            ],400); 
         } else {
             
             $result = $this->customerRrepo->createCustomer($request->all()); 
-            $response = $result;
+            $response = response()->json([
+                'status' => true,
+                'data' => $result["data"],
+                'message' =>  $result["message"]
+            ],200);
         }
  
         return $response;  
@@ -242,7 +246,7 @@ class CustomerController extends Controller
     public function update($id,Request $request)
     {
         $rules = [
-            'first_name' => 'required|max:20|unique:customers',
+            'first_name' => 'required|max:20',
             'last_name' => 'required|max:20',
             'phone_number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10' 
         ]; 
@@ -252,12 +256,17 @@ class CustomerController extends Controller
                 'status' => false,
                 'data' => null,
                 'message' =>  $validator->messages()
-            ]); 
-        }
-        else{
+            ],400); 
+        } else {
+            
             $result = $this->customerRrepo->updateCustomer($id,$request);  
-            $response = $result;
+            $response = response()->json([
+                'status' => true,
+                'data' => $result["data"],
+                'message' =>  $result["message"]
+            ],200);
         }
+         
         return $response;  
         
     }
@@ -329,5 +338,15 @@ class CustomerController extends Controller
             $result = Excel::import($import, $request->file);         
             return response()->json($import->getRowResult());
         }        
+    }
+
+    public function getCustomerById($id)
+    {         
+        $result = $this->customerRrepo->getCustomerById($id); 
+        return response()->json([
+            'status' => $result["status"],
+            'data' => $result["data"],
+            'message' => $result["message"]
+        ]);
     }
 }

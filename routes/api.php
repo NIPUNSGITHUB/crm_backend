@@ -22,5 +22,7 @@ Route::controller(CustomerController::class)->group(function () {
     Route::put('customers/{id}','update');
     Route::delete('customers/{id}','destroy');
     Route::post('customers/import','importFromCSV');
+    Route::get('customer/{id}','getCustomerById');
+    
 }); 
 

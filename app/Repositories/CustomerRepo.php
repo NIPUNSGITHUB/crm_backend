@@ -18,10 +18,10 @@ class CustomerRepo implements ICustomerRepo
     
     function getCustomerByValue($value){
         $responseArr["data"] = Customer::where('is_active',1)
-        ->orWhere('first_name','like','%'.$value.'%')  
+        ->where('first_name','like','%'.$value.'%')  
         ->orWhere('last_name','like','%'.$value.'%')
         ->orWhere('email','like','%'.$value.'%')
-        ->orWhere('phone_number','like','%'.$value.'%')
+        ->Where('phone_number','like','%'.$value.'%')
         ->get(); 
          
         $responseArr["status"] = true; 
@@ -57,6 +57,21 @@ class CustomerRepo implements ICustomerRepo
         $responseArr["status"] = ($result) ? true : false;
         $responseArr["message"] = ($result) ? "Sucessfull!" : "Fail!";
         $responseArr["data"] = $this->getAllCustomers()['data'];
+        return $responseArr;
+    }
+
+    function getCustomerById($customerId){  
+        try {
+            $responseArr["status"] = true;
+            $responseArr["data"] = Customer::whereId($customerId)->where('is_active', 1)->get(); 
+            $responseArr["message"] = "Sucessfull!";   
+        } catch (Exception $ex) {
+            $responseArr["status"] = false; 
+            $responseArr["data"] = [];
+            $responseArr["message"] = $ex->message();
+
+        }
+         
         return $responseArr;
     }
 }

@@ -21,7 +21,7 @@ class CustomerImport implements ToModel
                 if ($alreadyAvb == 0) {
                     ++$this->inserted;
                     return new Customer([            
-                            'title' => "Mr.",          
+                            'title' => "Mr",          
                             'first_name' => $row[0],
                             'last_name' => $row[1],
                             'phone_number' => $row[2],
